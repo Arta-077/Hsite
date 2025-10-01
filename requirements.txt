@@ -1,0 +1,5 @@
+Django==3.2.25
+asgiref==3.9.2
+pytz==2025.2
+sqlparse==0.5.3
+#pip install –r requirements.txt
