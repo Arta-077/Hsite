@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% for post1 in publish_posts %}
+    <h1>publish posts</h1>
+    <h2>{{post1.title}}</h2>
+    <p>{{post1.content}}</p>
+    <small>{{post1.created_date}}</small>
+    {% endfor %}
+    <hr>
+    {% for post0 in private_posts %}
+    <h1>private posts</h1>
+    <h2>{{post0.title}}</h2>
+    <p>{{post0.content}}</p>
+    <small>{{post0.created_date}}</small>
+    {% endfor %}
+</body>
+</html>
