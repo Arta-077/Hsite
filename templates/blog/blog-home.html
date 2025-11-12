@@ -91,10 +91,9 @@
 							<div class="single-post row">
 								<div class="col-lg-3  col-md-3 meta-details">
 									<ul class="tags">
-										<li><a href="#">Food,</a></li>
-										<li><a href="#">Technology,</a></li>
-										<li><a href="#">Politics,</a></li>
-										<li><a href="#">Lifestyle</a></li>
+										
+										<li><a href="">{{post.category.all | join:", "}}</a></li>
+										
 									</ul>
 									<div class="user-details row">
 										<p class="user-name col-lg-12 col-md-12 col-6"><a href="#">{{post.author}}</a> <span class="lnr lnr-user"></span></p>
@@ -105,12 +104,12 @@
 								</div>
 								<div class="col-lg-9 col-md-9 ">
 									<div class="feature-img">
-										<img class="img-fluid" src="{% static 'img/blog/feature-img1.jpg' %}" alt="">
+										<img class="img-fluid" href="{% url 'blog:singleblog' pid=post.id %}" src="{{post.image.url}}"  alt="">
 									</div>
-									<a class="posts-title" href="/blog/{{post.id}}"><h3>{{post.title}}</h3></a>
+									<a class="posts-title" href="{% url 'blog:singleblog' pid=post.id %}"><h3>{{post.title}}</h3></a>
 									<p class="excert">
 										{{post.content}}
-									<a href="/blog/{{post.id}}" class="primary-btn">View More</a>
+									<a href="{% url 'blog:singleblog' pid=post.id %}" class="primary-btn">View More</a>
 								</div>
 							</div>
 							{% endfor %}										
