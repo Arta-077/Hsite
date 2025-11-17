@@ -10,7 +10,7 @@ def BlogHome_view(request):
     context = {'posts' : posts}
     return render(request , 'blog\\blog-home.html', context)
 
-def BlogSingle_view(request,pid):
+def BlogSingle_view(request,pid): 
     post = get_object_or_404(Post , id=pid)
     
     context = {'post':post}
