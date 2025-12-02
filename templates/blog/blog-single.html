@@ -110,7 +110,7 @@
 
 								{% for cate in post.category.all %}
 								<li class="mr-1 mb-0">
-									<a href="" class="font-weight-bold">{{cate.name}} &nbsp;</a>{% if not forloop.last %},{% endif %}
+									<a href="{% url 'blog:categoryblog' cat_name=cate.name %}" class="font-weight-bold">{{cate.name}} &nbsp;</a>{% if not forloop.last %},{% endif %}
 								</li>
 								{% endfor %}
 							</ul>

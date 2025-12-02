@@ -23,4 +23,9 @@ def test_view(request,pid):
     context = {'post':post}
     return render(request , 'blog\\test.html' ,context )
 
+def BlogCategory_view(request,cat_name):
+    posts = Post.objects.filter(status=True , category__name=cat_name)
+    context = {'posts' : posts}
+    return render(request , 'blog\\blog-home.html', context)
+
 
