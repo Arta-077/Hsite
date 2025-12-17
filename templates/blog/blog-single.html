@@ -89,7 +89,7 @@
 						<div class="meta-inline d-flex flex-wrap align-items-center my-3 pb-2 border-bottom">
 
 							<p class="user-name mr-4 mb-0">
-								<a href="" class="font-weight-bold">{{post.author}}</a> <span
+								<a href="{% url 'blog:authorblog' author_username=post.author.username %}" class="font-weight-bold">{{post.author}}</a> <span
 									class="lnr lnr-user"></span>
 							</p>
 
