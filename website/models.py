@@ -17,6 +17,11 @@ class Contact(models.Model):
         return f'{self.name} - {self.id}'
 
 
+class Newsletter(models.Model):
+    Email = models.EmailField()
+
+    def __str__(self):
+        return f'{self.Email}'
 
 
 
