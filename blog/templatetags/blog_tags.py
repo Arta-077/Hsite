@@ -17,3 +17,19 @@ def postcategories():
     for category in categories:
         cat_dict[category] = posts.filter(category=category).count()
     return {'cat_dict':cat_dict}
+
+
+@register.filter
+def brief_naturaltime(value):
+    if not value:
+        return ""
+    # خروجی معمولاً به صورت "1 month, 2 weeks..." است
+    # ما آن را بر اساس کاما جدا کرده و فقط بخش اول را برمی‌گردانیم
+    first_part = str(value).split(',')[0]
+    
+    # اگر کلمه "ago" در کل رشته بود و در بخش اول نبود، آن را اضافه می‌کنیم
+    if "ago" not in first_part and "ago" in str(value):
+        first_part += " ago"
+        
+    return first_part
+
