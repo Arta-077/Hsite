@@ -1,4 +1,5 @@
 from django.db import models
+from taggit.managers import TaggableManager
 
 # Create your models here.
 
@@ -22,6 +23,8 @@ class Newsletter(models.Model):
 
     def __str__(self):
         return f'{self.Email}'
+    
+    
 
 
 

@@ -4,13 +4,15 @@ from django.http import HttpResponse
 from blog.models import Post
 from django.core.paginator import Paginator , EmptyPage, PageNotAnInteger
 
-def BlogHome_view(request, cat_name=None, author_username=None):
+def BlogHome_view(request, **kwargs):
     posts = Post.objects.filter(status=True)
 
-    if cat_name:
-        posts = Post.objects.filter(status=True, category__name=cat_name)
-    if author_username:
-        posts = Post.objects.filter(status=True, author__username=author_username)
+    if kwargs.get('cat_name') != None:
+        posts = posts.filter(status=True, category__name=kwargs['cat_name'])
+    if kwargs.get('author_username') != None:
+        posts = posts.filter(status=True, author__username=kwargs['author_username'])
+    if kwargs.get('tag_name') != None:
+        posts = posts.filter(status=True, tags__name__in=[kwargs['tag_name']])
 
     posts = Paginator(posts, 3)
     try:

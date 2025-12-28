@@ -40,16 +40,25 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django.contrib.sites',
     'django.contrib.sitemaps',
+    'debug_toolbar',
+    'robots',
+    'taggit',
     'django_extensions',
     'website.apps.WebsiteConfig',
     'blog',
 ]
 
+# sites framework
 SITE_ID = 2
+
+# robots
+ROBOTS_USE_SITEMAP = True
+ROBOTS_USE_HOST = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware', 
+    'debug_toolbar.middleware.DebugToolbarMiddleware',    
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -132,8 +141,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "statics" ,
-    '/var/www/static/',
+    BASE_DIR / "statics", 
 ]
 
 
@@ -141,3 +149,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
