@@ -2,6 +2,7 @@
 {% load static %}
 {% load blog_tags %}
 {% block content %}
+{% load humanize %}
 
 <div class="header-top">
 	<div class="container">
@@ -89,8 +90,8 @@
 						<div class="meta-inline d-flex flex-wrap align-items-center my-3 pb-2 border-bottom">
 
 							<p class="user-name mr-4 mb-0">
-								<a href="{% url 'blog:authorblog' author_username=post.author.username %}" class="font-weight-bold">{{post.author}}</a> <span
-									class="lnr lnr-user"></span>
+								<a href="{% url 'blog:authorblog' author_username=post.author.username %}"
+									class="font-weight-bold">{{post.author}}</a> <span class="lnr lnr-user"></span>
 							</p>
 
 							<p class="date mr-4 mb-0">
@@ -105,18 +106,19 @@
 							<ul class="tags d-flex align-items-center mb-0 p-0" style="list-style: none;">
 
 								<li class="mr-1">
-									<span class="font-weight-bold">Tags:</span>
+									<span class="font-weight-bold">category:</span>
 								</li>
 
 								{% for cate in post.category.all %}
 								<li class="mr-1 mb-0">
-									<a href="{% url 'blog:categoryblog' cat_name=cate.name %}" class="font-weight-bold">{{cate.name}} &nbsp;</a>{% if not forloop.last %},{% endif %}
+									<a href="{% url 'blog:categoryblog' cat_name=cate.name %}"
+										class="font-weight-bold">{{cate.name}} &nbsp;</a>{% if not forloop.last %},{% endif %}
 								</li>
 								{% endfor %}
 							</ul>
 
 							<p class="comments mr-4 mb-0">
-								<a href="">06 Comments</a> <span class="lnr lnr-bubble"></span>
+								<a href="">{{comments|length}} Comments</a> <span class="lnr lnr-bubble"></span>
 							</p>
 						</div>
 					</div>
@@ -164,26 +166,28 @@
 					</div>
 				</div>
 				<div class="comments-area">
-					<h4>05 Comments</h4>
+					<h4>{{comments|length}} Comments</h4>
 					<div class="comment-list">
+						{% for comment in comments %}
 						<div class="single-comment justify-content-between d-flex">
 							<div class="user justify-content-between d-flex">
 								<div class="thumb">
-									<img src="{% static 'img/blog/c1.jpg' %}" alt="">
+									<img src="{% static 'img/blog/c1.jpg' %}" alt="" style="width: 60px; height: 60px; object-fit: cover; border-radius: 5px;">
 								</div>
 								<div class="desc">
-									<h5><a href="#">Emilly Blunt</a></h5>
-									<p class="date">December 4, 2017 at 3:12 pm </p>
+									<h5><a href="#">{{comment.name}}</a></h5>
+									<p class="date">{{comment.created_date|naturalday}} </p>
 									<p class="comment">
-										Never say goodbye till the end comes!
+										{{comment.message}}
 									</p>
 								</div>
 							</div>
-							<div class="reply-btn">
-								<a href="" class="btn-reply text-uppercase">reply</a>
-							</div>
 						</div>
+						{% empty %}
+						<p>no comment here be the first one</p>
+						{% endfor %}
 					</div>
+					<!--
 					<div class="comment-list left-padding">
 						<div class="single-comment justify-content-between d-flex">
 							<div class="user justify-content-between d-flex">
@@ -260,22 +264,26 @@
 							</div>
 						</div>
 					</div>
+				-->
 				</div>
 				<div class="comment-form">
 					<h4>Leave a Comment</h4>
-					<form>
+
+					<form method="post" action="{% url 'blog:commentblog' pid=post.id %}">
+						{% csrf_token %}
+						<input type="hidden" name="post" value="{{ post.id }}">
 						<div class="form-group form-inline">
 							<div class="form-group col-lg-6 col-md-12 name">
-								<input type="text" class="form-control" id="name" placeholder="Enter Name"
+								<input type="text" class="form-control" name="name" placeholder="Enter Name"
 									onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Name'">
 							</div>
 							<div class="form-group col-lg-6 col-md-12 email">
-								<input type="email" class="form-control" id="email" placeholder="Enter email address"
+								<input type="email" class="form-control" name="email" placeholder="Enter email address"
 									onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter email address'">
 							</div>
 						</div>
 						<div class="form-group">
-							<input type="text" class="form-control" id="subject" placeholder="Subject"
+							<input type="text" class="form-control" name="subject" placeholder="Subject"
 								onfocus="this.placeholder = ''" onblur="this.placeholder = 'Subject'">
 						</div>
 						<div class="form-group">
@@ -283,9 +291,36 @@
 								onfocus="this.placeholder = ''" onblur="this.placeholder = 'Messege'"
 								required=""></textarea>
 						</div>
-						<a href="#" class="primary-btn text-uppercase">Post Comment</a>
+						<div class="pb-3">
+								{{form.captcha}}
+						</div>
+						<button type="submit" class="primary-btn text-uppercase">Post Comment</button>
+
 					</form>
 				</div>
+				{% if messages %}
+				{% for message in messages %}
+				<div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %}">{{ message|safe }}</div>
+				{% endfor %}
+				{% endif %}
+
+				{% if form.errors %}
+				<div class="alert alert-error">
+					<h4>Please fix the following errors</h4>
+					<ul>
+						{% for field in form %}
+						{% if field.errors %}
+						{% for error in field.errors %}
+						<li><a href="#id_{{ field.name }}" class="error">{{ error|escape }}</a></li>
+						{% endfor %}
+						{% endif %}
+						{% endfor %}
+					</ul>
+					{% if form.non_field_errors %}
+					{{ form.non_field_errors }}
+					{% endif %}
+				</div>
+				{% endif %}
 			</div>
 			<div class="col-lg-4 sidebar-widgets">
 				<div class="widget-wrap">
@@ -293,13 +328,13 @@
 					{% include 'blog/blog-search.html' %}
 
 					{% include 'blog/blog-writer.html' %}
-					
-					{% latestposts %}  
+
+					{% latestposts %}
 
 					{% include 'blog/blog-ads.html' %}
 
 					{% include 'blog/blog-post-category.html' %}
-					
+
 					{% include 'blog/blog-newsletter.html' %}
 
 					{% include 'blog/blog-tag-cloud.html' %}

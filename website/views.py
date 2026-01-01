@@ -17,10 +17,11 @@ def Contact_view(request):
         if form.is_valid():
             form.save()
             messages.add_message(request, messages.SUCCESS, 'Successfully')
+            return redirect('website:contact')
         else:
-            messages.add_message(request, messages.SUCCESS, 'Successfully')
+            messages.add_message(request, messages.ERROR, 'ERROR')
     form = ContactForm()
-    return render(request , 'website\contact.html',{'form':form})
+    return render(request, 'website/contact.html', {'form': form})
 
 def Newsletter_view(request):
     if request.method == 'POST':

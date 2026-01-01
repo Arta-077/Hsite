@@ -10,7 +10,9 @@ urlpatterns = [
     path('category/<str:cat_name>' , BlogHome_view , name='categoryblog'),
     path('author/<str:author_username>' , BlogHome_view , name='authorblog'),
     path('tag/<str:tag_name>' , BlogHome_view , name='tagblog'),
+    path('comment/<int:pid>' , BlogSingle_view , name='commentblog'),
     path('search/' , BlogSearch_view , name='searchblog'),
     # path('<int:pid>' , test_view , name='testblog'),
-    
 ]
+
+

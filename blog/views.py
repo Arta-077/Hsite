@@ -1,11 +1,16 @@
-
 from django.shortcuts import render , get_object_or_404
 from django.http import HttpResponse
-from blog.models import Post
+from blog.models import Post , Comment
 from django.core.paginator import Paginator , EmptyPage, PageNotAnInteger
+from django.db.models import Count
+from blog.forms import CommentForm
+from django.contrib import messages
+from django.shortcuts import redirect
 
 def BlogHome_view(request, **kwargs):
     posts = Post.objects.filter(status=True)
+    posts = posts.annotate(comments_count=Count('comment'))
+    posts = posts.order_by('-created_date')
 
     if kwargs.get('cat_name') != None:
         posts = posts.filter(status=True, category__name=kwargs['cat_name'])
@@ -24,26 +29,38 @@ def BlogHome_view(request, **kwargs):
         posts = posts.get_page(1)
     
     context = {'posts' : posts}
-    return render(request , 'blog\\blog-home.html', context)
+    return render(request , 'blog/blog-home.html', context)
 
 def BlogSingle_view(request,pid): 
-    post = get_object_or_404(Post , id=pid)
+    post = get_object_or_404(Post.objects.filter(status=True), id=pid)
+
+    comments = Comment.objects.filter(post=post.id, approved=True)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request, messages.SUCCESS, 'Successfully')
+            return redirect('blog:singleblog', pid=post.id)
+        else:
+            messages.add_message(request, messages.ERROR, 'ERROR')
+    form = CommentForm()
     
-    context = {'post':post}
-    return render(request , 'blog\\blog-single.html' , context)
+    context = {'post':post, 'comments':comments, 'form':form}
+    return render(request , 'blog/blog-single.html' , context)
+
 
 def test_view(request,pid):
     # post = Post.objects.get(id=pid)
     post = get_object_or_404(Post , id=pid)
     
     context = {'post':post}
-    return render(request , 'blog\\test.html' ,context )
+    return render(request , 'blog/test.html' ,context )
 
 def BlogCategory_view(request,cat_name):
     posts = Post.objects.filter(status=True , category__name=cat_name)
 
     context = {'posts' : posts}
-    return render(request , 'blog\\blog-home.html', context)
+    return render(request , 'blog/blog-home.html', context)
 
 
 def BlogSearch_view(request):
@@ -54,3 +71,8 @@ def BlogSearch_view(request):
 
     context = {'posts' : posts}
     return render(request , 'blog/blog-home.html', context)
+
+
+
+
+
