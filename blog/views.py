@@ -1,11 +1,10 @@
-from django.shortcuts import render , get_object_or_404
+from django.shortcuts import render , get_object_or_404 , redirect
 from django.http import HttpResponse
 from blog.models import Post , Comment
 from django.core.paginator import Paginator , EmptyPage, PageNotAnInteger
 from django.db.models import Count
 from blog.forms import CommentForm
 from django.contrib import messages
-from django.shortcuts import redirect
 
 def BlogHome_view(request, **kwargs):
     posts = Post.objects.filter(status=True)
@@ -43,8 +42,8 @@ def BlogSingle_view(request,pid):
             return redirect('blog:singleblog', pid=post.id)
         else:
             messages.add_message(request, messages.ERROR, 'ERROR')
+        
     form = CommentForm()
-    
     context = {'post':post, 'comments':comments, 'form':form}
     return render(request , 'blog/blog-single.html' , context)
 
